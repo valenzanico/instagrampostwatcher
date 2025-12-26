@@ -61,8 +61,8 @@ async def saved_posts(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     message = "Post salvati nel database:\n"
     for shortcode, publication_date, description in posts:
         desc_text = f"{description[:50]}..." if description else "(no description)"
-        message += f"- {publication_date} - {shortcode}: {desc_text} \n"
-
+        message += f"- Post del {publication_date},  https://instagram.com/p/{shortcode}/, {desc_text} \n"
+        
 
 
     await update.message.reply_text(message)
