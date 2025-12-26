@@ -1,0 +1,6 @@
+.env
+media_downloads
+instagram_posts.db
+__pycache__/
+*.pyc
+venv
