@@ -12,9 +12,7 @@ class Instagram:
     def __init__(self, username: str, db):
         self.username = username
         self.db = db
-        self.L = instaloader.Instaloader(
-            dirname_pattern="media_downloads/{shortcode}"
-        )
+        self.L = instaloader.Instaloader()
 
     def download_new_posts(self) -> dict:
         new_posts = []
@@ -26,7 +24,7 @@ class Instagram:
                 shortcode = post.shortcode
                 if not self.db.post_exists(shortcode):
                     logger.info(f"Downloading post: {shortcode}")
-                    self.L.download_post(post)
+                    self.L.download_post(post, target=Path("media_downloads") / shortcode)
                     new_posts.append({
                         'shortcode': shortcode,
                         'description': post.caption
