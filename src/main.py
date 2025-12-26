@@ -59,8 +59,11 @@ async def saved_posts(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         return
 
     message = "Post salvati nel database:\n"
-    for shortcode, description in posts:
-        message += f"- {shortcode}: {description[:50]}...\n" if description else f"- {shortcode}: (no description)\n"
+    for shortcode, publication_date, description in posts:
+        desc_text = f"{description[:50]}..." if description else "(no description)"
+        message += f"- {publication_date} - {shortcode}: {desc_text} \n"
+
+
 
     await update.message.reply_text(message)
 
