@@ -33,8 +33,25 @@ ghost = GhostAPI(GHOST_URL, ADMIN_API_KEY)
 async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(f'Ciao, questo bot controlla quando {INSTAGRAM_PAGE} pubblica nuovi post su Instagram e li inoltra su Telegram e Ghost!')
 
+
+async def _is_admin_of_channel(context: ContextTypes.DEFAULT_TYPE, user_id: int) -> bool:
+    """Return True if the user is admin/creator of CHANNEL_ID."""
+    try:
+        member = await context.bot.get_chat_member(CHANNEL_ID, user_id)
+        return getattr(member, "status", "") in ("administrator", "creator")
+    except Exception as e:
+        logger.warning(f"Impossibile verificare permessi admin: {e}")
+        return False
+
+
 async def saved_posts(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """List saved Instagram posts in the database."""
+    """List saved Instagram posts in the database (only channel admins)."""
+    user_id = update.effective_user.id if update.effective_user else None
+    if not user_id or not await _is_admin_of_channel(context, user_id):
+        if update.message:
+            await update.message.reply_text("Solo gli admin del canale possono usare questo comando.")
+        return
+
     posts = db.get_all_posts()
     if not posts:
         await update.message.reply_text("Nessun post salvato nel database.")
