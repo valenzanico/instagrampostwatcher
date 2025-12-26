@@ -1,0 +1,6 @@
+apscheduler==3.11.2
+instaloader==4.15
+PyJWT==2.10.1
+python-dotenv==1.2.1
+python-telegram-bot==22.5
+Requests==2.32.5

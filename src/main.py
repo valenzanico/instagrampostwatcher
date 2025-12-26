@@ -166,11 +166,11 @@ def main():
         hours=1,
         args=(app,),
         id='check_instagram_posts',
-        name='Check Instagram Posts Every 12 Hours',
+        name='Check Instagram Posts Every 1 Hour',
     )
     scheduler.start()
 
-    logger.info("Scheduler started. Checking for new posts every 12 hours.")
+    logger.info("Scheduler started. Checking for new posts every 1 hour.")
     app.run_polling()
 
 
