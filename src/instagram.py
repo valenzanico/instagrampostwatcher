@@ -1,6 +1,7 @@
 import instaloader
 import os
 from pathlib import Path
+import shutil
 
 print(os.getcwd())
 class Instagram:
@@ -18,14 +19,28 @@ class Instagram:
             if not post.is_pinned:
                 shortcode = post.shortcode
                 if not self.db.post_exists(shortcode):
+                    # Create target directory
                     target_dir = Path("media_downloads") / shortcode
                     target_dir.mkdir(parents=True, exist_ok=True)
-                    self.L.download_post(post, target=str(target_dir))
+                    
+                    # Download to temp location
+                    temp_dir = Path("temp_download")
+                    self.L.download_post(post, target=str(temp_dir))
+                    
+                    # Move files from instaloader's subfolder to target
+                    # instaloader creates: temp_download/username/media_files
+                    instaloader_dir = temp_dir / self.username
+                    if instaloader_dir.exists():
+                        for file in instaloader_dir.iterdir():
+                            if file.is_file() and file.suffix in ['.jpg', '.mp4']:
+                                shutil.move(str(file), str(target_dir / file.name))
+                        shutil.rmtree(temp_dir)
+                    
                     new_posts.append({
                         'shortcode': shortcode,
                         'description': post.caption
                     })
-            if posts.total_index >=5:
+            if posts.total_index >= 5:
                 break
                     
         return new_posts        
