@@ -18,6 +18,7 @@ CHANNEL_ID = int(os.getenv("CHANNEL_ID"))  # Telegram channel ID
 GHOST_URL = os.getenv("GHOST_URL")  # Ghost site URL
 ADMIN_API_KEY = os.getenv("ADMIN_API_KEY")
 INSTAGRAM_PAGE = os.getenv("INSTAGRAM_PAGE")
+CHECK_INTERVAL_HOURS = int(os.getenv("CHECK_INTERVAL_HOURS", 1))  # Interval to check for new posts
 DB_NAME = "instagram_posts.db"
 # Telegram bot token and channel ID
 
@@ -174,13 +175,13 @@ def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("hello", hello))
     app.add_handler(CommandHandler("savedposts", saved_posts))
-    #app.post_init = post_init
+    app.post_init = post_init
 
     scheduler = BackgroundScheduler()
     scheduler.add_job(
         check_new_posts,
         'interval',
-        hours=1,
+        hours=CHECK_INTERVAL_HOURS,
         args=(app,),
         id='check_instagram_posts',
         name='Check Instagram Posts Every 1 Hour',
